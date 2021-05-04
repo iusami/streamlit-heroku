@@ -1,11 +1,14 @@
-FROM python:3.8.2-slim
+FROM python:3.8.8-slim
 
 WORKDIR /usr/app/src
 
-COPY requirements.txt requirements.txt
+COPY pyproject.toml poetry.lock ./
 
-RUN pip install -r requirements.txt
+RUN pip install poetry==1.1.5
+RUN poetry config virtualenvs.create false \
+    && poetry install
 
 COPY app ./
+COPY data ../
 
 CMD ["sh", "-c", "streamlit run --server.port $PORT /usr/app/src/main.py"]
